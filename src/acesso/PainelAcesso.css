@@ -1,0 +1,39 @@
+
+#FormLogin .card-body {
+    color:#c0bfbf;
+    font-size: 12px;
+    padding:0;
+}
+#FormLogin input{
+    border:none;
+    width: 10rem;
+    height: 1.8rem;
+    font-size: 12px;
+    margin-top: 0.5rem;
+    background: rgba(245, 240, 240, 0.13);
+    color: rgb(255, 255, 255);
+}
+#FormLogin span{
+    color:#f70202 !important;
+}
+#FormLogin input:hover{
+    border:1px solid #1375b6;
+}
+#FormLogin button{
+    margin-top:0.5rem;
+    margin-bottom:0.5rem;
+    width: 4rem;
+    height: 2rem;
+    font-size: 12px;
+
+}
+#FormLogin .form-group{
+    width: 6rem;
+    height: 2.5rem;
+}
+.user-panel{
+    margin-top: 0.5em !important;
+    padding-bottom: 0em !important;
+  }
+
+
