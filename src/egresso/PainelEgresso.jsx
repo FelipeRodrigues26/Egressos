@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom';
 export default class PainelEgresso extends Component {
     state ={
         egresso:{}
@@ -7,7 +8,7 @@ export default class PainelEgresso extends Component {
     token=null;
     constructor(){
         super()
-        this.token = localStorage.getItem('app-token');  
+        this.token = localStorage.getItem('app-token'); 
     }
 
     async pegarEgresso(){
@@ -29,10 +30,10 @@ export default class PainelEgresso extends Component {
                         <img src="dist/img/user2-160x160.jpg" className="img-circle elevation-2" alt="User Image" />
                     </div>
                     <div className="info">
-                        <p href="/" style={{color:'#FFF'}} className="d-block">{this.state.egresso.nome} 
+                        <p href="/" style={{color:'#FFF'}} className="d-block">{this.state.egresso?.nome} 
                         <a onClick={ () =>{
                             localStorage.setItem('app-token','')
-                            window.location.reload()
+                            window.location.href ='/'
                             }
                         }> <i className="fas fa-sign-out-alt"></i> </a></p>
                     </div>
@@ -44,20 +45,20 @@ export default class PainelEgresso extends Component {
 
                         {/* <li className="nav-header">Menu</li> */}
                         <li className="nav-item">
-                            <a href="pages/calendar.html" className="nav-link">
+                        <Link to={`/perfil/${this.state.egresso.cpf}`} className="nav-link">
                                 <i className="nav-icon fas fa-user-tie"/>
                                 <p>
                                     Perfil
                                 </p>
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item">
-                            <a href="pages/gallery.html" className="nav-link">
+                            <Link to={'/oportunidades'} className="nav-link">
                                 <i className="nav-icon fas fa-book" />
-                                <p>
-                                    Oportunidades
-                                        </p>
-                            </a>
+                                    <p>
+                                        Oportunidades
+                                    </p>
+                            </Link>
                         </li>
                         <li className="nav-item">
                             <a href="pages/gallery.html" className="nav-link">

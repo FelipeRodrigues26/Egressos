@@ -1,0 +1,15 @@
+
+form span{
+    color: rgb(243, 46, 46) !important;
+}
+input:read-only {
+    background-color: rgb(253, 253, 247) !important;
+  }
+#FormEditEgresso input{border:0!important; 
+    border-bottom:solid 1px !important;
+    border-radius:0 !important;
+}
+
+#FormEditEgresso label{
+    color: #6c757d
+}

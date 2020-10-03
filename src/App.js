@@ -5,16 +5,19 @@ import Footer from './Footer'
 import Header from './Header'
 import Content from './Content'
 import Routes from './Routes'
+import { BrowserRouter, Router,useHistory } from 'react-router-dom'
+import { history } from './history'
 
 export default class App extends Component {
   render() {
     return (
       <div>
-        <Header/>
-        <Routes/>
-        <Menu/>
-        <Footer/>
-        
+        <Router history={history}>
+          <Header/>
+          <Content/>
+          <Menu/>
+          <Footer/>
+        </Router>
       </div>
     )
   }

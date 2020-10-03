@@ -53,10 +53,7 @@ export default class Menu extends Component {
            this.setState({
             usuarioLogado:true
          })
-            
-
-
-          
+ 
       console.log(this.state.usuarioLogado)       
     }
    

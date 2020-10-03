@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import history from '../history'
 import * as yup from 'yup'
 
+import './egresso.css'
 const CadastroEgresso = props => {
 
     const regex = /^(\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}|\d{3}\.?\d{3}\.?\d{3}-?\d{2})$/
@@ -15,14 +16,32 @@ const CadastroEgresso = props => {
 
     const handleSubmit = values => {
         console.log(values)
-        values.usuario.login = values.cpf;
-        
-        console.log(values)
-       var egresso =JSON.stringify(values);
+        var egresso = {
+            cpf:values.cpf,
+            nome:values.nome,
+            dataNascimento:values.dataNascimento,
+            nomeMae:values.nomeMae,
+            email:values.email,
+            fone:values.fone,
+            endereco:{
+                rua:values.rua,
+                numero:values.numero,
+                bairro:values.bairro,
+                cidade:values.cidade,
+                
+            },
+            usuario:{
+                login:values.cpf,
+                senha:values.senha
+            }
+        }
 
-        console.log(egresso)
+        
+        
+       var dados =JSON.stringify(egresso);
+       console.log(dados)
     
-        axios.post('http://localhost:8080/egressos', egresso,{
+        axios.post('http://localhost:8080/egressos', dados,{
             headers: {
               // Overwrite Axios's automatically set Content-Type
               'Content-Type': 'application/json'
@@ -46,11 +65,12 @@ const CadastroEgresso = props => {
     }
     const validations = yup.object().shape({
         cpf:yup.string().trim().matches(regex,'CPF/CNPJ inválido').required('Informe CPF/CNPJ'),
-        //senha:yup.string().min(3,'No mínimo 6 digitos').required('Digite a senha')
+        senha:yup.string().min(3,'No mínimo 6 digitos').required('Digite a senha'),
+        senhaConfirm:yup.string().oneOf([yup.ref('senha'), null], 'Senhas não conferem').min(3,'No mínimo 6 digitos').required('Digite a senha'),
         nascimento:yup.date('Informe uma da válida').required('Informe uma data')
     })
     return (
-        <div className="content-wrapper">
+        <>
             {/* Content Header (Page header) */}
             <section className="content-header">
                 <div className="container-fluid">
@@ -88,8 +108,8 @@ const CadastroEgresso = props => {
                                 <div className="card-body">
                                   <Formik initialValues={{
                                         cpf:'02316708269', nome:'n1',nascimento:'26101993', nomeMae:'M1',email:'teste@teste',fone:'f1', 
-                                        endereco:{rua:'R1', numero:'N1', bairro:'B1', cidade:'C1'}, usuario:{login:'',senha:''}
-                                    }} onSubmit={handleSubmit} validationSchema={validations}>
+                                        rua:'R1', numero:'N1', bairro:'B1', cidade:'C1',login:'',senha:''}
+                                    } onSubmit={handleSubmit} validationSchema={validations}>
                                     <Form role="form" id="FormCadastroEgresso">
                                         <div className="row">
                                             <div className="col-md-6">
@@ -134,44 +154,48 @@ const CadastroEgresso = props => {
 
                                             </div>
                                             <div className="col-md-6">
-                                                <fieldset title="dffdg">
                                                 <div className="form-group">
                                                     <label htmlFor="InputRua">Rua</label>
-                                                    <Field name="endereco.rua" type="text" className="form-control" id="InputRua" placeholder="Enter rua" />
+                                                    <Field name="rua" type="text" className="form-control" id="InputRua" placeholder="Enter rua" />
                                                     <ErrorMessage component="span" name="rua" />
                                                 </div>
                                                 <div className="form-group">
                                                 <div className="row">
                                                         <div className="col-md-4">
                                                             <label htmlFor="InputNumero">Número</label>
-                                                            <Field name="endereco.numero" type="text" className="form-control" id="InputNumero" placeholder="Número" />
+                                                            <Field name="numero" type="text" className="form-control" id="InputNumero" placeholder="Número" />
                                                             <ErrorMessage component="span" name="numero" />
                                                         </div>
                                                         <div className="col-md-8">
                                                             <label htmlFor="InputBairro">Bairro</label>
-                                                            <Field name="endereco.bairro" type="text" className="form-control" id="InputBairro" placeholder="Informe bairro" />
+                                                            <Field name="bairro" type="text" className="form-control" id="InputBairro" placeholder="Informe bairro" />
                                                             <ErrorMessage component="span" name="bairro" />
                                                         </div>
                                                     </div>   
                                                 </div>
                                                 <div className="form-group">
                                                         <label htmlFor="InputCidade">Cidade</label>
-                                                        <Field name="endereco.cidade" type="text" className="form-control" id="InputCidade" placeholder="Informe cidade" />
+                                                        <Field name="cidade" type="text" className="form-control" id="InputCidade" placeholder="Informe cidade" />
                                                         <ErrorMessage component="span" name="cidade" />
                                                     
                                                 </div>
                                                 <div className="form-group">
                                                         <label htmlFor="InputSenha">Senha</label>
-                                                        <Field name="usuario.senha" type="text" className="form-control" id="InputSenha" placeholder="Crie uma senha" />
+                                                        <Field name="senha" type="text" className="form-control" id="InputSenha" placeholder="Crie uma senha" />
                                                         <ErrorMessage component="span" name="senha" />
+                                                    
+                                                </div>
+                                                <div className="form-group">
+                                                        <label htmlFor="InputSenha">Confirmar senha</label>
+                                                        <Field name="senhaConfirm" type="text" className="form-control" id="InputSenha" placeholder="Confirme a senha" />
+                                                        <ErrorMessage component="span" name="senhaConfirm" />
                                                     
                                                 </div>
                                                
                                                 <div className="form-check">
                                                     <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                                                    <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
+                                                    <label className="form-check-label" htmlFor="exampleCheck1"><i>Li e concordo com o <a href="">termo</a> de uso.</i></label>
                                                 </div>
-                                                </fieldset>
                                             </div>
 
                                         </div>
@@ -359,7 +383,7 @@ const CadastroEgresso = props => {
 
                 </div>{/* /.container-fluid */}
             </section>
-        </div>
+        </>
 
     )
 

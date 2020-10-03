@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 export default class PainelCoordenador extends Component {
     
     state ={
-        coordenador:{}
+        coordenador:[]
     }
     token=null;
     constructor(){
@@ -14,10 +14,10 @@ export default class PainelCoordenador extends Component {
 
     async pegarCoordenador(){
         const config = { headers: {'Authorization': this.token} }
-        let response = await Axios.get('http://localhost:8080/egressos/'+this.props.infoUsuario.login,config)
+        let response = await Axios.get('http://localhost:8080/coordenador/buscaPorLogin/'+this.props.infoUsuario.login,config)
             console.log(response.data)
             this.setState({
-                egresso:response.data
+                coordenador:response.data
             })
     }
     componentDidMount(){
@@ -33,7 +33,7 @@ export default class PainelCoordenador extends Component {
                         <img src="dist/img/user2-160x160.jpg" className="img-circle elevation-2" alt="User Image" />
                     </div>
                     <div className="info">
-                         <p href="/" style={{color:'#FFF'}} class="d-block">{this.props.infoUsuario.egressos?.nome} <a onClick={ () =>{
+                         <p href="/" style={{color:'#FFF'}} class="d-block">{this.state.coordenador.nome} <a onClick={ () =>{
                             localStorage.setItem('app-token','')
                             window.location.reload()
                             }

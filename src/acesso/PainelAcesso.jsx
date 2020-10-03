@@ -3,13 +3,16 @@ import React, { useState } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup'
 import axios from 'axios';
-import { history } from '../history';
 import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
+import {useHistory} from 'react-router-dom'
+import  {history}  from '../history';
  const PainelAcesso = props => {
 
     const regex = /^(\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}|\d{3}\.?\d{3}\.?\d{3}-?\d{2})$/
     const [loading, setLoading] = useState("none")
     const [msgErro, setMsgErro] = useState(null)
+
     const handleSubmit = values => {
         setLoading("")
         axios.post('http://localhost:8080/login',values)
@@ -17,7 +20,7 @@ import { Redirect } from 'react-router';
             const {data} = resp
             if(resp){
                 localStorage.setItem('app-token',resp.headers.authorization)
-                window.location.reload()
+                window.location.href ='/'
             }   
         }).catch( (erro) => { 
             setMsgErro(erro.toString()); 
@@ -42,7 +45,8 @@ import { Redirect } from 'react-router';
                     <div >
                         <a>Sign in <i className="fas fa-sign-in-alt"></i> </a>
                         <span style={{ color: 'white' }}> ou</span>
-                        <a href="/"> Cadastro</a>
+                        
+                        <Link to="/cadastro"> Cadastro</Link>
                     </div>
                     <Formik initialValues={{login:'', senha:''}} onSubmit={handleSubmit}
                         validationSchema={validations}>
