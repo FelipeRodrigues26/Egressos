@@ -5,6 +5,7 @@ import PainelCoordenador from './coordenador/PainelCoordenador'
 import UsuarioService from './UsuarioService'
 import axios from "axios";
 import jwt from "jsonwebtoken"
+import PainelEmpresa from './parceiro/PainelEmpresa'
 
 export default class Menu extends Component {
     
@@ -18,7 +19,7 @@ export default class Menu extends Component {
     
   
     constructor(props){
-        super(props)
+        super()
         this.token = localStorage.getItem('app-token');     
         console.log(this.state.isTokenValido)
     }
@@ -66,6 +67,8 @@ export default class Menu extends Component {
                 this.painelGerado = <PainelEgresso infoUsuario={usuario}/>;
             else if(usuario?.role=='2')
                 this.painelGerado = <PainelCoordenador  infoUsuario={usuario}/>;
+            else if(usuario?.role=='3')
+                this.painelGerado = <PainelEmpresa  infoUsuario={usuario}/>;
         } else {
             this.painelGerado = <PainelAcesso/>;
         }

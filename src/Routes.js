@@ -7,17 +7,23 @@ import Footer from './Footer'
 import Menu from './Menu'
 import CadastroEgresso from './egresso/CadastroEgresso'
 import  {history}  from './history'
-import  PerfilEgresso from './egresso/PerfilEgresso'
+import  PerfilEgresso from './egresso/perfil/PerfilEgresso'
 import ListaOportunidades from './egresso/ListaOportunidades'
+import CadastroEmpresa from './parceiro/CadastroEmpresa'
+import ManterOportunidades from './parceiro/ManterOportunidades'
 
 
 const  Routes = () =>  (
-    <Switch>
+    <Switch path="egresso">
         <Route exact path="/estatistica" component={EstatisticaEgressos} />
-        <Route exact path="/cadastro" component={CadastroEgresso}/>
+        <Route exact path="/cadastroEgresso" component={CadastroEgresso}/>
         <Route exact path="/perfil/:id" component={PerfilEgresso}/>
         <Route exact path="/oportunidades" component={ListaOportunidades}/>
+        <Route exact path="/cadastroEmpresa" component={CadastroEmpresa} />
+        <Route exact path="/gerenciarOportunidades/:id" component={ManterOportunidades} />
+        
         <Route component={NotFound} />
+
     </Switch>
 )
 

@@ -1,22 +1,36 @@
 import Axios from 'axios'
 import React, { Component } from 'react'
+import { useParams } from 'react-router';
+ 
+export default class ManterOportunidades extends Component {
 
-export default class EgressoQualificacoes extends Component {
     state={
+        empresa:{},
         displayFormAdicionar:'none',
         displayBtnAdicionar:'',
-        tiposQualificacao:[],
-        listaQualificacoes:[],
 
-        qualificacao:{
-            qualificacaoTipo:{},
+        listaOportunidades:[],
+
+        oportunidade:{
+            tipo:'',
             descricao:'',
-            anoConclusao:'',
-            egresso:{}
+            requisitos:'',
+            empresa:{},
         }
     }
-    
-    
+  
+    async pegarEmpresa(id){
+
+        const token = localStorage.getItem('app-token');
+        const config = { headers: { 'Authorization': token } }
+        const resp = await Axios.get('http://localhost:8080/empresas/' + id, config)
+           
+        this.setState({
+            empresa:resp.data
+        })
+            
+
+    }
     mostraFormAdicionar = () => {
         this.setState({
             displayFormAdicionar:'',
@@ -31,46 +45,37 @@ export default class EgressoQualificacoes extends Component {
     }
 
     componentDidMount(){
-        this.pegarTiposQualificacao()
-        this.pegarQualificacoes()
+        let params = this.props.match.params;
+        this.pegarEmpresa(params.id)
+        this.pegarOportunidades(params.id)
     }
-    async pegarTiposQualificacao(){
-        const token = localStorage.getItem('app-token');
+
+   
+    
+    async pegarOportunidades(cnpj){
+       const token = localStorage.getItem('app-token');
         const config = { headers: { 'Authorization': token } }
-        let resp =  await Axios.get('http://localhost:8080/qualificacoes/tipos', config)
+        let resp =  await Axios.get('http://localhost:8080/oportunidades/buscaPorCNPJ/'+cnpj, config)
         
         this.setState({
-            tiposQualificacao:resp.data
+            listaOportunidades:resp.data
         })
-        
-    }
-    async pegarQualificacoes(){
-        const token = localStorage.getItem('app-token');
-        const config = { headers: { 'Authorization': token } }
-        let resp =  await Axios.get('http://localhost:8080/qualificacoes', config)
-        
-        this.setState({
-            listaQualificacoes:resp.data
-        })
-        
+
     }
     handleOnChange = evento => {
         let campo = evento.target.name;
-        const q = Object.assign({}, this.state.qualificacao)
-        if(campo==="qualificacaoTipo")
-            q[campo] = JSON.parse(evento.target.value);
-        else
-            q[campo] = evento.target.value;
+        const op = Object.assign({}, this.state.oportunidade)
+         op[campo] = evento.target.value;
         this.setState({
-            qualificacao:q
+            oportunidade:op
         })
     }
     handleSubmit = evento => {  
         const token = localStorage.getItem('app-token');
         const config = { headers: { 'Authorization': token } }
-        let qualificacao = this.state.qualificacao
-        qualificacao.egresso = this.props.egresso;
-        Axios.post('http://localhost:8080/qualificacoes/', qualificacao, config, {
+        let oportunidade = this.state.oportunidade
+        oportunidade.empresa = this.state.empresa;
+        Axios.post('http://localhost:8080/oportunidades/', oportunidade, config, {
             headers: {
                 // Overwrite Axios's automatically set Content-Type
                 'Content-Type': 'application/json'
@@ -82,22 +87,22 @@ export default class EgressoQualificacoes extends Component {
             
         }).finally(() => {
             this.escondeFormAdicionar()
-            this.pegarQualificacoes()
+            this.pegarOportunidades(this.state.empresa.cnpj)
             
         })
     }
 
-    deletarQualificacao(id){
+    deletarOportunidade(id){
         const token = localStorage.getItem('app-token');
         const config = { headers: { 'Authorization': token } }
-        Axios.delete(`http://localhost:8080/qualificacoes/${id}`, config
+        Axios.delete(`http://localhost:8080/oportunidades/${id}`, config
         ).then(resp => {
             const { data } = resp
             
         }).catch((erro) => {
             
         }).finally(() => {
-            this.pegarQualificacoes()
+            this.pegarOportunidades(this.state.empresa.cnpj)
         })
     }
     
@@ -105,18 +110,21 @@ export default class EgressoQualificacoes extends Component {
     render() {
         return (
             <div>
+                {JSON.stringify(this.state.oportunidade)}
+
                 <div className="card-body">
                     {
-                        this.state.listaQualificacoes.map(q =>{
+                        this.state.listaOportunidades.map(op =>{
                             return <div>
-                                <strong><i className="fas fa-book" /> {q.qualificacaoTipo.descricao}</strong>
+                                <strong><i className="fas fa-book" /> {op.tipo}</strong>
                                     <p className="text-muted">
-                                        {q.descricao}<br/>
-                                        {q.anoConclusao}
+                                        {op.descricao}<br/>
+                                        {op.requisitos}
                                     </p>
-                                
-                                <a href="" class="btn btn-info" style={{ padding: '0.3em 0.6em', marginRight: '0.1em' }}><i class="fas fa-edit"></i></a>
-                                <a href="" class="btn btn-danger" style={{ padding: '0.3em 0.6em' }} onClick={()=> this.deletarQualificacao(q.id)}><i class="fas fa-trash"></i></a>
+
+
+                                <bottom class="btn btn-info" style={{ padding: '0.3em 0.6em', marginRight: '0.1em' }}><i class="fas fa-edit"></i></bottom>
+                                <bottom class="btn btn-danger" style={{ padding: '0.3em 0.6em' }} onClick={()=> this.deletarOportunidade(op.id)}><i class="fas fa-trash"></i></bottom>
                                 <hr />
                             </div>
                         })
@@ -125,24 +133,23 @@ export default class EgressoQualificacoes extends Component {
                         <div className="form-group row">
                             <label className="col-sm-10 col-form-label">Tipo</label>
                             <div className="col-sm-4">
-                                <select name="qualificacaoTipo" class="form-control" onChange={this.handleOnChange}>{
-                                    this.state.tiposQualificacao.map(q =>{
-                                        return <option value={JSON.stringify(q)}>{q.descricao}</option>
-                                    })
-                                }
+                                <select name="tipo" class="form-control" onChange={this.handleOnChange}>
+                                    <option>Selecione</option>
+                                    <option>Emprego</option>
+                                    <option>Estágio</option>
                                 </select>
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="inputDescricao" className="col-sm-10 col-form-label">Descrição</label>
-                            <div className="col-sm-8">
-                                <input value={this.state.qualificacao.descricao} name='descricao' type="text" className="form-control" id="inputDescricao" placeholder="descrição" onChange={this.handleOnChange}/>
+                            <div className="col-sm-6">
+                                <input value={this.state.oportunidade.descricao} name='descricao' type="text" className="form-control" id="inputDescricao" placeholder="descrição" onChange={this.handleOnChange}/>
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="inputAnoConclusao" className="col-sm-12 col-form-label">Ano Conclusão</label>
-                            <div className="col-sm-3">
-                                <input value={this.state.qualificacao.anoConclusao} name='anoConclusao' type="text" className="form-control" id="inputAnoConclusao" placeholder="Ano conclusão" onChange={this.handleOnChange}/>
+                            <label htmlFor="inputRequisitos" className="col-sm-12 col-form-label">Requisitos</label>
+                            <div className="col-sm-6">
+                                <textarea value={this.state.oportunidade.requisitos} name='requisitos' className="form-control" id="inputRequisitos" placeholder="Insira os requisitos" onChange={this.handleOnChange}/>
                             </div>
                         </div>
                         <div className="form-group row">
@@ -154,7 +161,7 @@ export default class EgressoQualificacoes extends Component {
                         </div>
                     </form>
 
-                    <bottom onClick={this.mostraFormAdicionar} className="btn btn-primary" style={{display:this.state.displayBtnAdicionar}}><i className="fas fa-plus"></i> Adicionar qualificação</bottom>
+                    <bottom onClick={this.mostraFormAdicionar} className="btn btn-primary" style={{display:this.state.displayBtnAdicionar}}><i className="fas fa-plus"></i> Adicionar oportunidade</bottom>
                     <hr />
                     <strong><i className="far fa-file-alt mr-1" /> Dica</strong>
                     <p className="text-muted">Mantenha seus dados sempre atualizados para obter melhores resultados.</p>

@@ -4,6 +4,8 @@ import React, { Component } from 'react'
 export default class EgressoProfissional extends Component {
     
     state={
+
+        cpf:null,
         displayFormAdicionar:'none',
         displayBtnAdicionar:'',
         listaHistoricoProfissional:[],
@@ -16,6 +18,7 @@ export default class EgressoProfissional extends Component {
             egresso:{}
         }
     }
+
 
     mostraFormAdicionar = () => {
         this.setState({
@@ -30,19 +33,24 @@ export default class EgressoProfissional extends Component {
         })
     }
     
-    async pegarHistoricoProfissional(){
+    async pegarHistoricoProfissional(cpf){
         const token = localStorage.getItem('app-token');
         const config = { headers: { 'Authorization': token } }
-        let resp =  await Axios.get('http://localhost:8080/profissional', config)
+        let resp =  await Axios.get('http://localhost:8080/profissional/buscaPorCPF/'+cpf, config)
         
         this.setState({
             listaHistoricoProfissional:resp.data
         })
         
     }
-    componentDidMount(){
-        this.pegarHistoricoProfissional()
+ 
+    componentDidUpdate(){
+        if(this.state.cpf==null){
+            this.state.cpf = this.props.egresso.cpf;
+            this.pegarHistoricoProfissional(this.state.cpf)
+        }
     }
+    
 
     handleOnChange = evento => {
         let campo = evento.target.name;
@@ -70,7 +78,7 @@ export default class EgressoProfissional extends Component {
             
         }).finally(() => {
             this.escondeFormAdicionar()
-            this.pegarHistoricoProfissional()   
+            this.pegarHistoricoProfissional(this.state.cpf)   
         })
     }
 
@@ -84,7 +92,7 @@ export default class EgressoProfissional extends Component {
         }).catch((erro) => {
             
         }).finally(() => {
-            this.pegarHistoricoProfissional()
+            this.pegarHistoricoProfissional(this.state.cpf)
         })
     }
     
@@ -102,8 +110,8 @@ export default class EgressoProfissional extends Component {
                                         {hp.dataInicio} - {hp.dataTermino} 
                                     </p>
                                 
-                                <a href="" class="btn btn-info" style={{ padding: '0.3em 0.6em', marginRight: '0.1em' }}><i class="fas fa-edit"></i></a>
-                                <a href="" class="btn btn-danger" style={{ padding: '0.3em 0.6em' }} onClick={()=> this.deletarHistoricoProfissional(hp.id)}><i class="fas fa-trash"></i></a>
+                                <bottom className="btn btn-info" style={{ padding: '0.3em 0.6em', marginRight: '0.1em' }}><i className="fas fa-edit"></i></bottom>
+                                <bottom className="btn btn-danger" style={{ padding: '0.3em 0.6em' }} onClick={()=> this.deletarHistoricoProfissional(hp.id)}><i className="fas fa-trash"></i></bottom>
                                 <hr />
                             </div>
                         })

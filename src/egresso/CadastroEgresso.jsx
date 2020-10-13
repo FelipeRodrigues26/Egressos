@@ -64,7 +64,7 @@ const CadastroEgresso = props => {
         
     }
     const validations = yup.object().shape({
-        cpf:yup.string().trim().matches(regex,'CPF/CNPJ inválido').required('Informe CPF/CNPJ'),
+        cpf:yup.string().trim().matches(regex,'CPF inválido').required('Informe CPF'),
         senha:yup.string().min(3,'No mínimo 6 digitos').required('Digite a senha'),
         senhaConfirm:yup.string().oneOf([yup.ref('senha'), null], 'Senhas não conferem').min(3,'No mínimo 6 digitos').required('Digite a senha'),
         nascimento:yup.date('Informe uma da válida').required('Informe uma data')
@@ -107,7 +107,7 @@ const CadastroEgresso = props => {
                                 </div>
                                 <div className="card-body">
                                   <Formik initialValues={{
-                                        cpf:'02316708269', nome:'n1',nascimento:'26101993', nomeMae:'M1',email:'teste@teste',fone:'f1', 
+                                        cpf:'', nome:'n1',nascimento:'26101993', nomeMae:'M1',email:'teste@teste',fone:'f1', 
                                         rua:'R1', numero:'N1', bairro:'B1', cidade:'C1',login:'',senha:''}
                                     } onSubmit={handleSubmit} validationSchema={validations}>
                                     <Form role="form" id="FormCadastroEgresso">

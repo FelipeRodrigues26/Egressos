@@ -1,10 +1,9 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import React, { Component, createRef, useEffect, useState } from 'react'
-import './egresso.css'
+import '../egresso.css'
 import * as yup from 'yup'
 import { useParams } from 'react-router'
 import Axios from 'axios'
-import './egresso.css'
 import EgressoQualificacoes from './EgressoQualificacoes'
 import EgressoProfissional from './EgressoProfissional'
 
@@ -256,6 +255,7 @@ const PerfilEgresso = props => {
                                             {/* About Me Box */}
                                             <div className="card card-primary">
                                                 <EgressoQualificacoes egresso={egresso}/>
+                                               
                                             </div>
 
                                         </div>
